@@ -43,6 +43,16 @@ int main() {
 }
 ```
 
+- menggunakan `fork()` untuk membuat variabel child1, child2, dan child3.
+- child1 merupakan proses yang mendownload film.zip dengan menggunakan `wget`
+- child2 merupakan proses yang meng-unzip file film.zip dengan `unzip`, secara efektif membuat folder baru yang berbeda dengan film.zip
+- child3 merupakan proses yang me-remove file film.zip dengan `rm`
+- ketiganya menggunakan `*argv` untuk menyimpan command dan `execv` untuk mengeksekusi command.
+- `wait()` digunakan agar prosesnya berjalan secara bergantian.
+  ![image](https://github.com/user-attachments/assets/2e628c96-bd39-46ab-b253-bbaa0f7efd1f)
+  ![image](https://github.com/user-attachments/assets/f7d1f745-4d81-457d-8b86-2d963cfbf9ec)
+
+
 
 ### Bagian B
 Setelah berhasil melakukan unzip, Trabowo iseng melakukan pemilihan secara acak/random pada gambar-gambar film tersebut untuk menentukan film pertama yang akan dia tonton malam ini.
@@ -102,6 +112,17 @@ int main(){
     return 0;
 }
 ```
+
+- mendeklarasikan `pipe(fd)` sekaligus mengecek apakah pipe nya berhasil.
+- `fork()` child_id, masuk ke child process. Menggunakan `dup2(fd[1], STDOUT_FILENO)` untuk mengindikasikan bahwa apa yang muncul di terminal akan masuk ke writing end dari sebuah pipe.
+- masih di child process, meng-`exec` ls, yang akan dimasukkan ke writing end.
+- masuk ke parent process (setelah else), menutup writing end dengan `closefd[1]`. Mencari ukuran optimal untuk sebuah array buffer `temp` dengan `maxbyte` (mencari besar dari reading pipe `fd[0]`) dan memberi karakter NULL di index terakhir (sekaligus mentransfer hasil ls yang dii child process ke array temp).
+- menggunakan `strtok` untuk memparsing per file dan memasukan file-file nya ke dalam array `files`. Variabel `count` diincrement untuk mencari tau ada berapa file didalamnya.
+- `wait(NULL)` untuk menunggu proses-proses selesai.
+- menggunakan `srand()` dan `rand()` untuk mengambil angka secara acak. Kemudian mengeprint nama file berdasarkan index yang sudah diperoleh secara acak.
+- menghapus data dari array files[] dengan `free()`.
+  ![image](https://github.com/user-attachments/assets/d09c0792-7365-4912-aa5e-5c477bac266c)
+
 
 ### Bagian C
 Trabowo membuat 3 folder: FilmHorror, FilmAnimasi, FilmDrama. Kemudian, dengan 2 proses (dari atas dan dari bawah) memindahkan film-film ke folder berdasarkan genre. Lalu buatlah file “recap.txt” yang menyimpan log setiap kali mereka selesai melakukan task. Setelah memindahkan semua film, Trabowo dan Peddy juga perlu menghitung jumlah film dalam setiap kategori dan menuliskannya dalam file total.txt
@@ -276,6 +297,23 @@ int main(){
 }
 ```
 
+- pertama, membuat child proses yang meng-`exec` `mkdir` dan membuat 3 folder yaitu, "FilmHorror", "FilmAnimasi", dan "FilmDrama".
+- **kurang lebih sama dengan nomor 2 untuk mengisi array `files[]` dengan data film-film.**
+- membuat pipe `pipet` dan `pipep` yang berfungsi untuk mentransfer data dari child process ke parent process mengenai jumlah film per genre.
+- membuat process `peddyd` dan `trabowod` dimana peddy memulai dari awal ke tengah sedangkan trabowo dari akhir ke tengah.
+- Mekanisme trabowo dan peddy: mencari genre dengan fungsi `findgenre()`, mengincrement `countp` atau `countp` berdasarkan index--genre nya, menulis log dengan fungsi `writelog()` dan memindahkan film ke respective folder dengan `movefile()`. Setelah semuanya selesai, write countt/countp ke pipe masing-masing dan transfer datanya ke parent process.
+- Mekanisme findgenre: menggunakan `strrchr` untuk mengambil parsing terakhir berdasarkan underscore, meng-return berdasarkan genre yang ditemukan.
+- Mekanisme movefile: menggunakan `snprintf` untuk membuat string berdasarkan `filename` dan folder genre, meng-`exec` `mv` untuk memindahkan file ke folder berdasarkan genre.
+- Mekanisme writelog: membuka file `log.txt` dengan `fopen` ("a" menandakan bahwa penulisan file dilanjutkan dari yang ditinggalkan sebelumnya), mendapatkan waktu reallife dengan `time` dan `localtime`, menggunakan `fprintf` untuk menulis kedalam log.txt, menutup file dengan `fclose`.
+- kembali ke main process, setelah dikirimkan jumlah film per genre dengan variable `countt` dan `countp`, gunakan `read(pipe[0]` pada masing-masing pipe untuk membaca reading end nya dan simpan dalam `fromp` dan `fromt`. Tambahkan kedua pipe pada indeks yang sama (0 = horror, 1 = animasi, 2 = drama) dan simpan dalam array `countgenre[]`.
+- gunakan simple bubble sort dengan kondisi untuk mencari indeks dengan value terbesar.
+- buka file `total.txt` dengan `fopen` dan gunakan `fprintf` untuk menuliskan jumlah film per genre, serta genre dengan film terbanyak. fclose().
+![Screenshot 2025-04-30 165401](https://github.com/user-attachments/assets/6798781c-73d2-4068-93fe-86409a042cd0)
+![Screenshot 2025-04-30 165412](https://github.com/user-attachments/assets/a3305a5e-05dd-4905-aa7d-4cc7f6f842af)
+![Screenshot 2025-04-30 155854](https://github.com/user-attachments/assets/f5fbd53a-6c05-4c19-9cce-99a23e43acfe)
+![Screenshot 2025-04-30 165346](https://github.com/user-attachments/assets/48bc6e7e-0c80-40fe-9eab-5e2b3258efc9)
+
+
 ### Bagian D
 Setelah semua film tertata dengan rapi dan dikelompokkan dalam direktori masing-masing berdasarkan genre, Trabowo ingin mengarsipkan ketiga direktori tersebut ke dalam format ZIP agar tidak memakan terlalu banyak ruang di komputernya.
 
@@ -300,3 +338,6 @@ int main(){
     }
 }
 ```
+- mirip dengan soal bagian A
+- child1 adalah proses yang meng-zip foldernya dengan menggunakan `zip` diikuti dengan nama file yang diinginkan dan ketiga folder yang ingin dizip.
+- child2 adalah proses yang meng-remove folder film dengan menggunakan `rm`.
