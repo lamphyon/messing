@@ -4,7 +4,7 @@ Selamat datang! Dokumentasi ini menjelaskan konsep dasar di balik pendeteksian e
 
 ---
 
-## 1. 🧠 Memahami Teori Bayes (Bayes' Theorem)
+## 1. Memahami Teori Bayes (Bayes' Theorem)
 
 Sebelum masuk ke algoritmanya, kita harus kenalan dulu dengan **Teori Bayes**. Ini adalah konsep fundamental dalam probabilitas dan statistika untuk menghitung **probabilitas bersyarat** (*conditional probability*). 
 
@@ -22,15 +22,15 @@ $$P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}$$
 
 ---
 
-## 2. 🤖 Bagaimana Naive Bayes Bekerja?
+## 2. Bagaimana Naive Bayes Bekerja?
 
 Algoritma **Naive Bayes** meminjam rumus di atas untuk melakukan klasifikasi (misalnya: membedakan pesan Spam dan Aman). 
 
 Kenapa disebut **"Naive"** (Naif)? 
-Karena algoritma ini punya asumsi yang sangat kaku: **Ia menganggap setiap kata dalam sebuah kalimat itu berdiri sendiri dan tidak punya hubungan satu sama lain.** (Contoh: kata "hadiah" dan "gratis" dianggap tidak saling berkaitan, padahal di dunia nyata sering muncul bersamaan).
+Karena algoritma ini punya asumsi yang sangat kaku: Ia menganggap setiap kata dalam sebuah kalimat itu berdiri sendiri dan tidak punya hubungan satu sama lain. (Contoh: kata "hadiah" dan "gratis" dianggap tidak saling berkaitan, padahal di dunia nyata sering muncul bersamaan).
 
-### 🔍 Contoh Kasus: Mendeteksi Kata Spam
-Bayangkan ada email masuk bertuliskan: *"uang gratis"*. Algoritma akan menghitung seberapa besar peluang email ini adalah SPAM menggunakan variasi rumus Bayes:
+### Contoh Kasus: Mendeteksi Kata Spam
+Bayangkan ada email masuk bertuliskan: "uang gratis". Algoritma akan menghitung seberapa besar peluang email ini adalah SPAM menggunakan variasi rumus Bayes:
 
 $$P(Spam | uang, gratis) \propto P(Spam) \cdot P(uang | Spam) \cdot P(gratis | Spam)$$
 
@@ -42,13 +42,12 @@ $$P(Spam | uang, gratis) \propto P(Spam) \cdot P(uang | Spam) \cdot P(gratis | S
 
 ---
 
-## 3. 📂 Sekilas Tentang Dataset
+## 3. Sekilas Tentang Dataset
 
 Model klasifikasi ini membutuhkan data latih. Salah satu dataset publik yang paling populer digunakan untuk eksperimen ini adalah **SMS Spam Collection Dataset** (bisa ditemukan di platform seperti *Kaggle*).
 
 **Karakteristik Dataset:**
-* **Format:** `.csv` (*Comma Separated Values*)
-* **Isi:** Ribuan baris pesan teks berbahasa Inggris.
+* **Format:** Hardcoded message langsung di code nya
 * **Struktur:** Umumnya terdiri dari dua kolom utama:
   * `v1` (Label): Kategori pesan, isinya `spam` atau `ham` (aman/bukan spam).
   * `v2` (Teks): Isi pesan aslinya.
@@ -62,15 +61,15 @@ Model klasifikasi ini membutuhkan data latih. Salah satu dataset publik yang pal
 
 ---
 
-## 4. 📊 Cara Membaca Evaluasi Model
+## 4. Cara Membaca Evaluasi Model
 
 Setelah model selesai dilatih dan diuji, kita akan mendapatkan metrik evaluasi. Berikut adalah panduan membaca hasil performa model (contoh kasus menggunakan akurasi **98.39%**):
 
-* 🎯 **Accuracy (Akurasi):** Dari keseluruhan data yang diuji, berapa persentase tebakan yang benar? (Contoh: dari 100 email, 98 ditebak dengan tepat).
-* 🔎 **Precision:** Ketika model berteriak *"Ini SPAM!"*, seberapa akurat teriakan itu? (Skor 0.98 berarti 98% tebakan spam-nya memang benar-benar spam).
-* 🎣 **Recall:** Dari semua email SPAM yang *sebenarnya* ada di dataset, berapa banyak yang berhasil ditangkap oleh model? (Skor 0.89 berarti 89% spam berhasil ditangkap, sisanya 11% lolos ke *inbox* pengguna).
+* **Accuracy (Akurasi):** Dari keseluruhan data yang diuji, berapa persentase tebakan yang benar? (Contoh: dari 100 email, 98 ditebak dengan tepat).
+* **Precision:** Ketika model berteriak *"Ini SPAM!"*, seberapa akurat teriakan itu? (Skor 0.98 berarti 98% tebakan spam-nya memang benar-benar spam).
+* **Recall:** Dari semua email SPAM yang *sebenarnya* ada di dataset, berapa banyak yang berhasil ditangkap oleh model? (Skor 0.89 berarti 89% spam berhasil ditangkap, sisanya 11% lolos ke *inbox* pengguna).
 
-### 🔲 Membaca Confusion Matrix
+### Membaca Confusion Matrix
 *Confusion Matrix* membantu kita melihat di mana model melakukan kesalahan:
 
 | | Ditebak AMAN | Ditebak SPAM |
@@ -82,3 +81,7 @@ Setelah model selesai dilatih dan diuji, kita akan mendapatkan metrik evaluasi. 
 * **True Positive (133):** Email spam yang *sukses* ditebak spam.
 * **False Positive (2):** Email aman tapi *salah tebak* masuk folder spam (menyebalkan bagi user).
 * **False Negative (16):** Email spam yang *lolos* masuk ke kotak masuk utama (berbahaya).
+
+### Berikut adalah hasil Test Run
+
+tarok screenshot
